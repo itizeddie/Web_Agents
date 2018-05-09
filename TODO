@@ -1,0 +1,3 @@
+1) Average all document hash/vectors and output to file
+2) Load all into a python document that uses numpy/svd
+3) Compute document similarity between all articles to place on scale, rearrange and average?
