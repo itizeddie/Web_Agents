@@ -30,7 +30,7 @@ print "Found " . scalar (@allfiles) . " files in $directory ...\n";
 
 open OUTFILE, ">$outputfile.raw";
 
-for ($x = 0; $x < scalar(@allfiles); $x++) {
+for ($x = 1; $x <= scalar(@allfiles); $x++) {
     print "Reading: " . $allfiles[$x] . "\n";
     open FILE, $directory . $allfiles[$x];
     $page = "";
@@ -41,27 +41,29 @@ for ($x = 0; $x < scalar(@allfiles); $x++) {
     print OUTFILE ".I $x\n";
     print OUTFILE ".T\n";
     $page =~ s/<title>([^<]*)<\/title>//i;
-    $title = $1;
+    $title = lc($1);
     print OUTFILE "$title\n";
     print OUTFILE ".K\n";
     $page =~ s/<meta\s+name=(\")?keywords(\")?\s+content=(\")?([^\"]*)(\")[^>]*>//i;
-    $keywords = $4;
+    $keywords = lc($4);
     print OUTFILE "$keywords\n";
     print OUTFILE ".W\n";
     $page =~ s/<meta\s+name=(\")?description(\")?\s+content=(\")?([^\"]*)(\")[^>]*>//i;
-    $abstract = $4;
+    $abstract = lc($4);
     print OUTFILE "$abstract\n";
     print OUTFILE ".A\n";
     $page =~ s/<body[^>]*>(.*)$/$1/i;
-    $body = &striphtml ($page);
+    $body = lc(&striphtml ($page));
     print OUTFILE "$body\n";
 }
+
+print OUTFILE ".I 0\n";
 
 close OUTFILE;
 
 print "Stemming (only works on hops/malt/barley)!\n";
 
-`./nstemmer $outputfile.raw > $outputfile.stemmed`;
+`./stemmer/nstemmer $outputfile.raw > $outputfile.stemmed`;
 
 print "Making Histogram for Stemmed File\n";
 

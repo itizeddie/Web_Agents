@@ -126,7 +126,7 @@ main( argc, argv )
                   /* Part 2: Process each word in the file */
    while( GetNextTerm(stream,64,term) ) {
       /* printf("TERM=%s\n",term); */
-      if ( ((*term=='.') && isalpha(term[1])) || Stem(term) ) (void)printf( "%s\n", term );
+      if ( ((*term=='.') && ((isalpha(term[1]) && term[2] == 0) || (term[1] == 'I' && term[2] == ' ' && isdigit(term[3])))) || Stem(term) ) (void)printf( "%s\n", term );
    }
                  /* Part 3: Close the input file and return */
    (void)fclose( stream );

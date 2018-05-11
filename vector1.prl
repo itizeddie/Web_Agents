@@ -18,16 +18,12 @@ use FileHandle;
 ## Program Defaults and Global Variables
 ############################################################
 
-my $DIR  = ".";
-my $HOME = ".";
+my $DIR  = "corpus/cnn";
+my $HOME = "corpus/cnn";
 
-my $token_docs = "$DIR/cacm";           # tokenized cacm journals
-my $corps_freq = "$DIR/cacm";           # frequency of each token in the journ.
-my $stoplist   = "$DIR/common_words";   # common uninteresting words
-my $titles     = "$DIR/titles.short";   # titles of each article in cacm 
-
-my $token_intr = "$HOME/interactive";    # file created for interactive queries
-my $inter_freq = "$HOME/interactive";    # frequency of each token in above
+my $token_docs = "$DIR/cnn";           # tokenized cacm journals
+my $corps_freq = "$DIR/cnn";           # frequency of each token in the journ.
+my $stoplist   = "$DIR/../common_words";   # common uninteresting words
 
 my $option_term_weighting = "2";
 my $option_stemming = "2";
@@ -98,19 +94,10 @@ sub init_files {
     $token_docs .= "\.stemmed";
     $corps_freq .= "\.stemmed\.hist";
     $stoplist   .= "\.stemmed";
-    $token_qrys .= "\.stemmed";
-    $query_freq .= "\.stemmed\.hist";
-    $token_intr .= "\.stemmed";
-    $inter_freq .= "\.stemmed\.hist";
   }
   else {
-
     $token_docs .= "\.tokenized";
     $corps_freq .= "\.tokenized\.hist";
-    $token_qrys .= "\.tokenized";
-    $query_freq .= "\.tokenized\.hist";
-    $token_intr .= "\.tokenized";
-    $inter_freq .= "\.tokenized\.hist";
   }
 }
 
@@ -131,14 +118,8 @@ sub init_corp_freq {
   my $corps_freq_fh = new FileHandle $corps_freq, "r" 
     or croak "Failed $corps_freq";
 
-  my $query_freq_fh = new FileHandle $query_freq, "r"
-    or croak "Failed $query_freq";
-
   my $stoplist_fh   = new FileHandle $stoplist  , "r"
     or croak "Failed $stoplist";
-
-  my $titles_fh     = new FileHandle $titles    , "r"
-    or croak "Failed $titles";
 
   my $line = undef;
 
@@ -152,19 +133,6 @@ sub init_corp_freq {
 
     $docs_freq_hash{ $term } = $doc_freq;
     $corp_freq_hash{ $term } = $cor_freq;
-  }
-
-
-  while (defined( $line = <$query_freq_fh> )) {
-
-    my ($str) = ($line =~ /^\s*(\S.*)/);
-
-    my ($doc_freq,
-        $cor_freq,
-        $term    ) = split /\s+/, $str;
-
-    $docs_freq_hash{ $term } += $doc_freq;
-    $corp_freq_hash{ $term } += $cor_freq;
   }
 
 
@@ -335,29 +303,32 @@ sub write_data {
 
   foreach my $hash (@doc_vector) {
     foreach my $key (keys %{ $hash }) {
-      $avg_doc_hash->{$key} += $hash->{$key} / $total_docs;
+      $avg_doc_hash{$key} += $hash->{$key} / $total_docs;
     }
   }
 
-  print OUT scalar(keys(%avg_doc_hash));
+  print OUT scalar(keys(%avg_doc_hash)), "\n";
   foreach my $key (keys %avg_doc_hash) {
-    print OUT $key;
-    print OUT $avg_doc_hash->{$key};
+    print OUT $key, " ";
+    print OUT $avg_doc_hash{$key}, "\n";
   }
 
-  print OUT scalar(keys($docs_freq_hash));
+  print OUT scalar(keys(%docs_freq_hash)), "\n";
   foreach my $key (keys %docs_freq_hash) {
-    print OUT $docs_freq_hash{$key};
+    print OUT $key, " ";
+    print OUT $docs_freq_hash{$key}, "\n";
   }
 
-  print OUT scalar(keys($corpus_freq_hash));
-  foreach my $key (keys %corpus_freq_hash) {
-    print OUT $corp_freq_hash{$key};
+  print OUT scalar(keys(%corp_freq_hash)), "\n";
+  foreach my $key (keys %corp_freq_hash) {
+    print OUT $key, " ";
+    print OUT $corp_freq_hash{$key}, "\n";
   }
 
-  print OUT scalar(keys($stoplist_hash));
+  print OUT scalar(keys(%stoplist_hash)), "\n";
   foreach my $key (keys %stoplist_hash) {
-    print OUT $stoplist_hash{$key};
+    print OUT $key, " ";
+    print OUT $stoplist_hash{$key}, "\n";
   }
 
   close OUT;
