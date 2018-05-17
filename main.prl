@@ -1,0 +1,34 @@
+#!/usr/local/bin/perl -w
+
+use strict;
+
+
+&main;
+
+
+
+###
+#	Layout: Given document - term matrix saved in file input.data
+#       Get document from user ~~~
+#       add term frequencies and update input.data with info
+#       Call python script on input.data (output saved in svd_output.txt)
+#       Make svd_output.txt back to doc-term matrix in perl
+#       Compute Cosign simialrities between all docs. 
+#       Create scale 0-100 of most left to right OR if low on time Find the column with
+#       	closest document similarity and print out something along the lines of 
+#       	'You lean towards news like __CNN__'
+##
+#
+#
+
+
+
+
+sub main{
+
+
+
+
+
+
+}
