@@ -2,7 +2,10 @@ import sys
 import numpy as np
 
 
-a = np.loadtxt("input.txt", dtype='i', delimiter=' ')
+##
+# UPDATE THE COLUMS USED AFTER ALL CORPS USED. CURRENTLY ON 1. NEED TO , 2, 3, 4 ... N -1
+##
+a = np.loadtxt("input.txt", usecols(1))
 
 # example taken from Video Tutorials - All in One
 # https://www.youtube.com/watch?v=P5mlg91as1c
@@ -51,6 +54,7 @@ X_a = np.dot(np.dot(U_new, S), VT_new.T)
 
 
 np.savetxt('svd_output.txt', X_a)
+##SAVES SVD'D DOC-TERM MATRIX, MISSING FIRST COL OF TERMS. LIST OF TERM COL 0 OF 'input.txt'
 
 #print "X_a \n {}".format(X_a)
 
