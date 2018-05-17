@@ -1,14 +1,16 @@
 #!/usr/local/bin/perl -w
 
 use strict;
-
+use warnings;
+# boolean to determine if user wants to leave main menu.
+$done = 1;
 
 &main;
 
 
 
 ###
-#	Layout: Given document - term matrix saved in file input.data
+#	Layout: Create document - term matrix and save in file input.data
 #       Get document from user ~~~
 #       add term frequencies and update input.data with info
 #       Call python script on input.data (output saved in svd_output.txt)
@@ -22,13 +24,85 @@ use strict;
 #
 
 
+####
+# Read in .data files and combine them into doc -term matrix with one empty column
+# for the query doc. 
+####
+
+sub init_matrix{
 
 
+
+}
+##
+# Use a web agent to retrieve document and update the document -term matrix with the query in the last column
+##
+
+sub get_query {
+
+
+}
+###
+# Read in svd_output.txt and save values to doc-term matrix
+###
+sub rebuild_matrix {
+
+}
+
+#
+# Compute cosine similarity for all docs
+#
+sub compute_cosin_sim {
+
+
+}
+
+
+###
+# Output your artical is most simliar to the following news outlets. 1. __ 2.__ 3.__
+###
+sub output_option1{
+
+}
+
+###
+#Output bias number from some calculations we do. We talked it over, but i forgot how
+###
+sub output_option2 {
+
+}
+
+
+
+
+#########################################################################################
+##
+##                                        MAIN
+##
+##
+##
+########################################################################################
 sub main{
 
+&init_matrix;
+while($done) {
+	print "Please Enter document URL below: \n";
+        $url = <STDIN>;
 
+	&get_query;
+        
+##
+#Calling svd script
+#
+##
 
+        &rebuild_matrix;
+        &compute_cosin_sim;
 
-
+	&output_option1;
+        &output_option2;
+        print "Do you want to try another document? <1>Yes <0>No\n";
+        $done = <STDIN>;
+}
 
 }
