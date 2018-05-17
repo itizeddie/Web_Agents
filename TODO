@@ -1,3 +1,4 @@
 1) Average all document hash/vectors and output to file
-2) Load all into a python document that uses numpy/svd
+2) Load DOC-Term Matrix into (a) from main.prl
+(a) python script that uses numpy/svd and saves to svd_output.txt
 3) Compute document similarity between all articles to place on scale, rearrange and average?
