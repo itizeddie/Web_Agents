@@ -27,6 +27,7 @@ my $done = 1;
   my @corp_vector = ( );
   my @terms = ( );
   my $num_corpuses = 0;
+  my @sim = ();
 ####
 # Read in .data files and combine them into doc -term matrix with one empty column
 # for the query doc. 
@@ -108,7 +109,7 @@ sub get_query {
 sub rebuild_matrix {
   my @resultarray;
   # Output from svd_output.txt in matrix format comma-delimited
-  open (my $OUT,'<' ,"svd.output.txt") or die "Could not open svd.output.txt\n";
+  open (my $OUT,'<' ,"svd_output.txt") or die "Could not open svd.output.txt\n";
   while(my $line = <$OUT>) {
     chomp $line;
     my @linearray = split(" ", $line);
@@ -121,6 +122,8 @@ sub rebuild_matrix {
   foreach my $term (@terms) {
   $j++;
     foreach my $i (1 .. $num_corpuses) {
+      printf ("Corpuses num %s\nresult array[%s] is %s", $i, $j, $resultarray[$j]);
+      print $resultarray[$j][$i];
       $corp_vector[$i]{$term} = $resultarray[$j][$i]; 
     }
   }
@@ -131,9 +134,54 @@ sub rebuild_matrix {
 # Compute cosine similarity for all docs
 #
 sub compute_cosin_sim {
-
+foreach my $i (1 .. $num_corpuses) {
+  foreach my $j (1 .. $num_corpuses) {
+  $sim[$i][$j] = &cosine_sim_a($corp_vector[$i], $corp_vector[$j]);
+  }
+}
 
 }
+
+########################################
+# COSINE_SIM_A
+# Reused code from HW2
+#  
+#####################################
+
+sub cosine_sim_a {
+  my $vec1 = shift;
+  my $vec2 = shift;
+
+  my $num = 0;
+  my $sum_sq1 = 0;
+  my $sum_sq2 = 0;
+
+  my @val1 = values %{$vec1 };
+  my @val2 = values %{ $vec2 };
+
+  if ((scalar @val1) > (scalar @val2)) {
+
+    my $tmp = $vec1;
+       $vec1 = $vec2;
+       $vec2 = $tmp;
+  }
+
+  my $key = undef;
+  my $val = undef;
+
+  while (($key, $val) = each %{ $vec1}) {
+
+    $num += $val * ( $$vec2{ $key } || 0);
+  }
+
+  my $term = undef;
+  foreach $term (@val1) { $sum_sq1 += $term * $term;}
+  foreach $term (@val2) { $sum_sq2 += $term * $term;}
+
+  return ($num / sqrt( $sum_sq1 * $sum_sq2));
+}
+
+
 
 
 ###
