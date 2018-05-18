@@ -246,7 +246,7 @@ sub init_doc_vectors {
         if ($doc_num == 0 or $docs_freq_hash{ $key } == 0) {
           $hash->{$key} = 0;
         } else {
-          $hash->{$key} *= log( $doc_num / $docs_freq_hash{ $key });
+          $hash->{$key} *= log( $doc_num / $corp_freq_hash{ $key });
         }
       }
     }
