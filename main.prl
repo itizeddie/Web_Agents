@@ -226,7 +226,7 @@ while($done) {
 #Calling svd script
 #
 ##
-  	system("python", "svd.ps") == 0 or die "Python script error $?";
+  	system("python", "svd.py") == 0 or die "Python script error $?";
         &rebuild_matrix;
         &compute_cosin_sim;
 
