@@ -46,7 +46,7 @@ VT_new = np.delete(VT,np.s_[2:VT_size[1]], axis = 0)
 #print U_new.shape, S.shape, VT_new.shape
 
 X_a = np.dot(np.dot(U_new, S), VT_new)
-print ("A:\n {}".format(X_a));
+#print ("A:\n {}".format(X_a));
 
 np.savetxt('svd_output.txt', X_a)
 ##SAVES SVD'D DOC-TERM MATRIX, MISSING FIRST COL OF TERMS. LIST OF TERM COL 0 OF 'input.txt'
