@@ -62,7 +62,12 @@ sub compute_cosin_sim {
 # Output your artical is most simliar to the following news outlets. 1. __ 2.__ 3.__
 ###
 sub output_option1{
-
+##
+#make these values the doc names most simlar to querey document via similarity matrix
+$a;
+$b;
+$c;
+printf("Your artical is most similar to the following news outlets. 1.%s 2.%s 3.%s\n", $a, $b, $c);
 }
 
 ###
