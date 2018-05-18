@@ -18,11 +18,21 @@ use FileHandle;
 ## Program Defaults and Global Variables
 ############################################################
 
-my $DIR  = "corpus/cnn";
-my $HOME = "corpus/cnn";
+#print "Enter Corpus Name: ";
+#
+#my    $in = <STDIN>;
+#chomp $in;
+#my $corpus = "$in";
+my $bypass = 0;
+if (defined($ARGV[0]) && $ARGV[0] eq "bypass") { $bypass = 1; }
 
-my $token_docs = "$DIR/cnn";           # tokenized cacm journals
-my $corps_freq = "$DIR/cnn";           # frequency of each token in the journ.
+my $corpus = $ARGV[1] || "breitbart";
+
+my $DIR  = "corpus/$corpus";
+my $HOME = "corpus/$corpus";
+
+my $token_docs = "$DIR/$corpus";           # tokenized cacm journals
+my $corps_freq = "$DIR/$corpus";           # frequency of each token in the journ.
 my $stoplist   = "$DIR/../common_words";   # common uninteresting words
 
 my $option_term_weighting = "2";
@@ -273,8 +283,10 @@ sub init_doc_vectors {
 ##########################################################
 
 sub main_loop {
-  print "\nCHECKING PARAMETERS ...\n";
-  &get_params;
+  if ($bypass == 0) {
+    print "\nCHECKING PARAMETERS ...\n";
+    &get_params;
+  }
 
   print "INITIALIZING VECTORS ... \n";
 
@@ -289,7 +301,7 @@ sub main_loop {
 
   my $total_docs = &init_doc_vectors;
 
-  &write_data("saved.data", $total_docs);
+  &write_data("$corpus.data", $total_docs);
 }
 
 sub write_data {
