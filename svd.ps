@@ -22,7 +22,7 @@ np.set_printoptions(suppress=True)
 np.set_printoptions(precision=3)
 
 #print "--- FULL ---"
-U, s, VT = np.linalg.svd(a, full_matrices=True)
+U, s, VT = np.linalg.svd(a, full_matrices=False)
 
 #print "U:\n {}".format(U)
 #print "s:\n {}".format(s)
