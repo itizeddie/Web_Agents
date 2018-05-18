@@ -2,8 +2,10 @@
 
 use strict;
 use warnings;
+use Carp;
+use FileHandle;
 # boolean to determine if user wants to leave main menu.
-$done = 1;
+my $done = 1;
 
 &main;
 
@@ -27,12 +29,69 @@ $done = 1;
 ####
 # Read in .data files and combine them into doc -term matrix with one empty column
 # for the query doc. 
+# This function requires the corpus_list file to list the names of the corpuses.
+# This will output to input.txt a matrix of terms vs corpuses, with each field
+# separated by a comma. The order of the columns is the same as the order of
+# corpuses in corpus_list. The terms are in no particular order.
 ####
 
-sub init_matrix{
+sub init_matrix {
+  # Get list of corpuses
+  my $fh = new FileHandle "corpus_list", "r" or croak "Failed corpus_list";
+  my @corpuses = ();
+  push @corpuses, undef;
+  my $num_corpuses = 0;
 
+  while(defined(my $line = <$fh>)) {
+    chomp $line;
+    push @corpuses, $line;
+    $num_corpuses += 1;
+  }
 
+  # Initialize data structure for holding corpus data.
+  my @corp_vector = ( );
+  push @corp_vector, { };
+  my @terms = (); # List of terms for ease of writing to file later
 
+  foreach my $i (1 .. $num_corpuses) {
+    push @corp_vector, { };
+
+    #Get the number of lines of terms/weights in the corpus (first line of .data file)
+    my $corp_fh = new FileHandle "outputs/$corpuses[$i].data", "r" or croak "Failed outputs/$corpuses[$i].data";
+    my $num_lines = <$corp_fh>;
+    chomp $num_lines;
+
+   # For each line, add the term and weight to the hash for corpus $i
+   foreach (1 .. $num_lines) {
+      local $/ = " ";
+      my $term = <$corp_fh>;
+      chomp $term;
+      push @terms, $term;
+
+      local $/ = "\n";
+      my $weight = <$corp_fh>;
+      chomp $weight;
+
+      $corp_vector[$i]{$term} = $weight;
+    }
+  }
+
+  # Output to input.txt in matrix format comma-delimited
+  open OUT, ">input.txt";
+
+  # Output to input.txt
+  foreach my $term (@terms) {
+    foreach my $i (1 .. $num_corpuses) {
+      print OUT ($corp_vector[$i]{$term} || 0);
+      
+      if ($i == $num_corpuses) {
+        print OUT "\n";
+      } else {
+        print OUT ",";
+      }
+    }
+  }
+  close OUT;
 }
 ##
 # Use a web agent to retrieve document and update the document -term matrix with the query in the last column
@@ -64,9 +123,9 @@ sub compute_cosin_sim {
 sub output_option1{
 ##
 #make these values the doc names most simlar to querey document via similarity matrix
-$a;
-$b;
-$c;
+my $a;
+my $b;
+my $c;
 printf("Your artical is most similar to the following news outlets. 1.%s 2.%s 3.%s\n", $a, $b, $c);
 }
 
@@ -92,7 +151,7 @@ sub main{
 &init_matrix;
 while($done) {
 	print "Please Enter document URL below: \n";
-        $url = <STDIN>;
+        my $url = <STDIN>;
 
 	&get_query;
         
