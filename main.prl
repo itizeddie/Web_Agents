@@ -24,8 +24,9 @@ my $done = 1;
 ##
 #
 #
-
-
+  my @corp_vector = ( );
+  my @terms = ( );
+  my $num_corpuses = 0;
 ####
 # Read in .data files and combine them into doc -term matrix with one empty column
 # for the query doc. 
@@ -40,7 +41,7 @@ sub init_matrix {
   my $fh = new FileHandle "corpus_list", "r" or croak "Failed corpus_list";
   my @corpuses = ();
   push @corpuses, undef;
-  my $num_corpuses = 0;
+  #my $num_corpuses = 0;
 
   while(defined(my $line = <$fh>)) {
     chomp $line;
@@ -49,9 +50,9 @@ sub init_matrix {
   }
 
   # Initialize data structure for holding corpus data.
-  my @corp_vector = ( );
+  #my @corp_vector = ( );
   push @corp_vector, { };
-  my @terms = (); # List of terms for ease of writing to file later
+  #my @terms = (); # List of terms for ease of writing to file later
 
   foreach my $i (1 .. $num_corpuses) {
     push @corp_vector, { };
@@ -75,10 +76,9 @@ sub init_matrix {
       $corp_vector[$i]{$term} = $weight;
     }
   }
-
   # Output to input.txt in matrix format comma-delimited
   open OUT, ">input.txt";
-
+   
   # Output to input.txt
   foreach my $term (@terms) {
     foreach my $i (1 .. $num_corpuses) {
@@ -92,6 +92,7 @@ sub init_matrix {
     }
   }
   close OUT;
+
 }
 ##
 # Use a web agent to retrieve document and update the document -term matrix with the query in the last column
@@ -105,6 +106,24 @@ sub get_query {
 # Read in svd_output.txt and save values to doc-term matrix
 ###
 sub rebuild_matrix {
+  my @resultarray;
+  # Output from svd_output.txt in matrix format comma-delimited
+  open (my $OUT,'<' ,"svd.output.txt") or die "Could not open svd.output.txt\n";
+  while(my $line = <$OUT>) {
+    chomp $line;
+    my @linearray = split(" ", $line);
+    push(@resultarray, @linearray);
+  }
+  close $OUT;
+
+  my $j = 0;
+  # Output to from
+  foreach my $term (@terms) {
+  $j++;
+    foreach my $i (1 .. $num_corpuses) {
+      $corp_vector[$i]{$term} = $resultarray[$j][$i]; 
+    }
+  }
 
 }
 
